@@ -2,11 +2,11 @@ from operator import countOf
 from fastapi import APIRouter, Depends, status
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import session
-from sqlmodel import Session, Table, func, select
+from sqlmodel import Session, Table, func, select, desc
 
 from database import get_db
 from models import Course, Member, Trainer
-from schemas import CreateCourseReqeust, UpdateCourseRequest
+from schemas import CoursePopularityReturn, CreateCourseReqeust, UpdateCourseRequest
 
 router = APIRouter()
 
@@ -16,6 +16,24 @@ router = APIRouter()
 @router.get("/courses")
 async def get_courses(db: Session = Depends(get_db)) -> list[Course]:
     return db.exec(select(Course)).all()
+
+
+
+@router.get("/courses/day")
+async def get_day_of_week(db: Session = Depends(get_db)):
+    statment = (
+        select(Course.date, func.sum(Course.id))
+        .select_from(Course)
+        .group_by(Course.date)
+        .order_by(func.sum(Course.id).desc()).limit(1)
+    )
+    results = db.exec(statment).all()
+    final = []
+    for result in results:
+        final.append(CoursePopularityReturn(date=result[0]))
+            
+    return final
+
 
 
 @router.get("/courses/{course_id}")
@@ -33,9 +51,6 @@ async def get_course_attendance(course_id: int, db: Session = Depends(get_db)) -
 
     return len(attendance)
 
-@router.get("/courses/day")
-async def get_day_of_week(db: Session = Depends(get_db)):
-    func.count()
 
 
 

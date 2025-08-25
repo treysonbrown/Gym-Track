@@ -17,6 +17,9 @@ class CreateCourseReqeust(BaseModel):
     duration: str
     date: str
 
+class CoursePopularityReturn(BaseModel):
+    date: str
+
 class UpdateMemberRequest(BaseModel):
     name: str | None = None
     active: bool | None = None
