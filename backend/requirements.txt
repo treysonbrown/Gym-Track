@@ -3,3 +3,6 @@ fastapi
 sqlmodel
 alembic
 decouple
+uvicorn
+python-dotenv
+psycopg2-binary
