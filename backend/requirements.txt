@@ -2,7 +2,7 @@ pydantic
 fastapi
 sqlmodel
 alembic
-decouple
+python-decouple
 uvicorn
 python-dotenv
 psycopg2-binary
